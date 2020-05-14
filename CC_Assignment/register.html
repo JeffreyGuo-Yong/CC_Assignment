@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+</head>
+<body class="registerBody">
+
+<div class="registerMain">
+    <div class="content">
+        <div class="title">
+            <img src="style/registerLogo.png">
+            <div>Register Account</div>
+        </div>
+
+        <div class="form">
+            <form action="registerController.php" method="post">
+                <div class="input">
+                    <input type="text" placeholder="Nickname" name="nickname">
+                </div>
+                <div class="input">
+                    <input type="text" placeholder="Name" name="name">
+                </div>
+                <div class="input">
+                    <input type="text" placeholder="Email Address" name="email">
+                </div>
+                <div class="check">
+                    <input type="text" placeholder="Verification code">
+                    <div class="button">
+                        <button type="button">Verify Email</button>
+                    </div>
+                </div>
+                <div class="input">
+                    <input type="text" placeholder="Phone Number" name="phone">
+                </div>
+                <div class="check">
+                    <input type="text" placeholder="Verification code">
+                    <div class="button">
+                        <button type="button">Verify Phone</button>
+                    </div>
+                </div>
+                <div class="input">
+                    <input type="password" placeholder="Password" name="password">
+                </div>
+                <div class="input">
+                    <input type="text" placeholder="Room Number" name="room">
+                </div>
+                <div class="input">
+                    <input type="text" placeholder="Street" name="street">
+                </div>
+                <div class="input">
+                    <input type="text" placeholder="City" name="city">
+                </div>
+                <div class="select">
+                    <select name="state">
+                        <option selected="selected">Please select state</option>
+                        <option value="ACT">Australian Capital Territory</option>
+                        <option value="NSW">New South Wales</option>
+                        <option value="NT ">Northern Territory</option>
+                        <option value="QLD">Queensland</option>
+                        <option value="SA ">South Australia</option>
+                        <option value="TAS">Tasmania</option>
+                        <option value="VIC">Victoria</option>
+                        <option value="WA ">Western Australia</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <input type="text" placeholder="Postcode" name="postcode">
+                </div>
+                <div class="select">
+                    <select name="notificationType">
+                        <option selected="selected">Please select notification type</option>
+                        <option value="email">Email notification</option>
+                        <option value="phone">Phone notification</option>
+                    </select>
+                </div>
+                <div class="buttonDiv">
+                    <button class="button" type="button" onclick="window.location.href='index.php'">
+                        <img src="style/button.png">
+                        <p>Back</p>
+                    </button>
+                    <button class="button" type="submit">
+                        <img src="style/button.png">
+                        <p>Register</p>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

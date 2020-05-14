@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+    <script type="text/javascript" src="script/script.js"></script>
+    <script type="text/javascript" src="script/map.js"></script>
+</head>
+
+<body class="registerBody">
+
+<div class="postMain">
+    <div class="content">
+        <div class="postTitle">
+            <img src="style/registerLogo.png">
+            <div>Post</div>
+        </div>
+
+        <div class="form">
+            <form action="postController.php" method="post" enctype="multipart/form-data">
+                <div class="step">
+                    <p>Step 1: basic information</p>
+                </div>
+                <div class="input">
+                    <input type="text" placeholder="Title" name="title">
+                </div>
+                <div class="select">
+                    <select name="type">
+                        <option selected="selected">Please select pet type</option>
+                        <option value="dog">Dog</option>
+                        <option value="cat">Cat</option>
+                        <option value="others">Others</option>
+                    </select>
+                </div>
+                <div class="textarea">
+                    <textarea placeholder="Please enter post content" name="content"></textarea>
+                </div>
+                <div class="step">
+                    <p>Step 2: select pet picture</p>
+                </div>
+                <div class="file">
+                    <input type="file" id="file" onchange="printFileName()" name="image">
+                    <label for="file" id="fileLabel">Choose a file</label>
+                </div>
+                <div class="step">
+                    <p>Step 3: address information</p>
+                </div>
+                <div class="addressNotes">
+                    Notes: 2 ways to find address information. <br/>
+                    1. click 'Find Position' button, the browser will find position automatically. <br/>
+                    2. if cannot use 'Find Position', enter your address and click 'Search' button. <br/>
+                    The 'Find Position' may get wrong address, please make sure the address is right.
+                </div>
+                <div class="address">
+                    <input type="text" placeholder="Please enter address" id="inputAddress">
+                    <input type="text" name="latitude" id="latitude">
+                    <input type="text" name="longitude" id="longitude">
+                    <input type="text" name="address" id="address">
+                </div>
+                <div class="addressButton">
+                    <div class="buttonDiv">
+                        <button class="button" type="button" onclick="searchAddress()">
+                            <img src="style/search.png">
+                            <p>Search</p>
+                        </button>
+                        <button class="button" type="button" onclick="getLocation()">
+                            <img src="style/search.png">
+                            <p>Find Position</p>
+                        </button>
+                    </div>
+                </div>
+                <div class="map" id="map"></div>
+                <div class="buttonDiv">
+                    <button class="button" type="button" onclick="window.location.href='index.php'">
+                        <img src="style/button.png">
+                        <p>Back</p>
+                    </button>
+                    <button class="button" type="submit">
+                        <img src="style/button.png">
+                        <p>Register</p>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
