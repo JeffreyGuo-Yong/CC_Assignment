@@ -1,6 +1,20 @@
 <?php
     require "functions.php";
-    $posts = getPosts();
+
+    $isPetType = isset($_POST['petType']);
+    if($isPetType == 1){
+        $petType = $_POST['petType'];
+        $parameter = [
+            'type' => $petType
+        ];
+        if($petType != "all"){
+            $posts = getQueryResult("postType", $parameter);
+        }else{
+            $posts = getScanResult("post");
+        }
+    }else{
+        $posts = getScanResult("post");
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,14 +36,14 @@
                 echo "<table>";
 
                 echo "<tr>";
-                echo "<th colspan='3'>" . $post['title']['S'] . "</th>";
+                echo "<th colspan='3'>" . $post['title'] . "</th>";
                 echo "</tr>";
 
                 echo "<tr>";
-                echo "<td>Type: " . $post['type']['S'] . "</td>";
-                echo "<td>Date: " . $post['post_date']['S'] . "</td>";
+                echo "<td>Type: " . $post['type'] . "</td>";
+                echo "<td>Date: " . $post['post_date'] . "</td>";
                 echo "<td rowspan='2' class='buttonTD'>";
-                echo "<button class='button' type='button' onclick='getDetails(" . "\"" . $post['uni_post_id']['S'] . "\"" . ")'>";
+                echo "<button class='button' type='button' onclick='getDetails(" . "\"" . $post['uni_post_id'] . "\"" . ")'>";
                 echo "<img src='style/button.png'>";
                 echo "<p>Details</p>";
                 echo "</button>";
@@ -37,7 +51,7 @@
                 echo "</tr>";
 
                 echo "<tr>";
-                echo "<td colspan='2'>Content: " . $post['content']['S'] . "</td>";
+                echo "<td colspan='2'>Content: " . $post['content'] . "</td>";
                 echo "</tr>";
 
                 echo "</table>";

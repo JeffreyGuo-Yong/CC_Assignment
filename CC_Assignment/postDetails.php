@@ -1,7 +1,16 @@
 <?php
     require "functions.php";
     $uni_post_id = $_GET['postID'];
-    $post = getPostDetails($uni_post_id);
+    $postParameter = [
+            'id' => $uni_post_id
+    ];
+    $post = getQueryResult("post", $postParameter);
+
+    $uni_user_id = $post[0]['uni_user_id'];
+    $userParameter = [
+            'id' => $uni_user_id
+    ];
+    $user = getQueryResult("user", $userParameter);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,16 +34,28 @@
                 <p>01: Post Information</p>
             </div>
             <div class="info">
-                <h3><?php echo $post[0]['title']['S'] ?></h3>
+                <h3><?php echo $post[0]['title'] ?></h3>
             </div>
             <div class="info">
-                <p>Type: <?php echo $post[0]['type']['S'] ?> Date: <?php echo $post[0]['post_date']['S'] ?></p>
+                <p>Type: <?php echo $post[0]['type'] ?> Date: <?php echo $post[0]['post_date'] ?></p>
             </div>
             <div class="info">
-                <p>Content: <?php echo $post[0]['content']['S'] ?></p>
+                <p>Content: <?php echo $post[0]['content'] ?></p>
             </div>
             <div class="step">
-                <p>02: Pet Image</p>
+                <p>02: Contact Information</p>
+            </div>
+            <div class="info">
+                <p>Poster Name: <?php echo $user['name'] ?></p>
+            </div>
+            <div class="info">
+                <p>Email Address: <?php echo $user['email'] ?></p>
+            </div>
+            <div class="info">
+                <p>Phone Number: <?php echo $user['phone'] ?></p>
+            </div>
+            <div class="step">
+                <p>03: Pet Image</p>
             </div>
             <div class="image">
                 <?php
@@ -43,13 +64,13 @@
                 ?>
             </div>
             <div class="step">
-                <p>03: Address Information</p>
+                <p>04: Address Information</p>
             </div>
             <div class="address">
-                <h3><?php echo $post[0]['address']['S'] ?></h3>
+                <h3><?php echo $post[0]['address'] ?></h3>
                 <?php
-                    echo "<input type='text' id='latitude' hidden='hidden' value='" . $post[0]['latitude']['N'] . "'>";
-                    echo "<input type='text' id='longitude' hidden='hidden' value='" . $post[0]['longitude']['N'] . "'>";
+                    echo "<input type='text' id='latitude' hidden='hidden' value='" . $post[0]['latitude'] . "'>";
+                    echo "<input type='text' id='longitude' hidden='hidden' value='" . $post[0]['longitude'] . "'>";
                 ?>
             </div>
             <div class="map" id="map"></div>
@@ -57,10 +78,6 @@
                 <button class="button" type="button" onclick="window.location.href='postList.php'">
                     <img src="style/button.png">
                     <p>Back</p>
-                </button>
-                <button class="button" type="button">
-                    <img src="style/replyButton.png">
-                    <p>Reply</p>
                 </button>
             </div>
         </div>

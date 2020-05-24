@@ -18,24 +18,27 @@
         </div>
 
         <div class="form">
-            <form action="postController.php" method="post" enctype="multipart/form-data">
+            <form action="postController.php" method="post" enctype="multipart/form-data" onsubmit="return verifyPostForm()">
                 <div class="step">
                     <p>Step 1: basic information</p>
                 </div>
                 <div class="input">
-                    <input type="text" placeholder="Title" name="title">
+                    <input type="text" placeholder="Title" name="title" id="title">
                 </div>
+                <div class="message"></div>
                 <div class="select">
-                    <select name="type">
-                        <option selected="selected">Please select pet type</option>
+                    <select name="type" id="type">
+                        <option value="" selected="selected">Please select pet type</option>
                         <option value="dog">Dog</option>
                         <option value="cat">Cat</option>
                         <option value="others">Others</option>
                     </select>
                 </div>
+                <div class="message"></div>
                 <div class="textarea">
-                    <textarea placeholder="Please enter post content" name="content"></textarea>
+                    <textarea placeholder="Please enter post content" name="content" id="content"></textarea>
                 </div>
+                <div class="message"></div>
                 <div class="step">
                     <p>Step 2: select pet picture</p>
                 </div>
@@ -43,6 +46,7 @@
                     <input type="file" id="file" onchange="printFileName()" name="image">
                     <label for="file" id="fileLabel">Choose a file</label>
                 </div>
+                <div class="message"></div>
                 <div class="step">
                     <p>Step 3: address information</p>
                 </div>
@@ -54,10 +58,11 @@
                 </div>
                 <div class="address">
                     <input type="text" placeholder="Please enter address" id="inputAddress">
-                    <input type="text" name="latitude" id="latitude">
-                    <input type="text" name="longitude" id="longitude">
-                    <input type="text" name="address" id="address">
+                    <input type="text" name="latitude" id="latitude" hidden="hidden">
+                    <input type="text" name="longitude" id="longitude" hidden="hidden">
+                    <input type="text" name="address" id="address" hidden="hidden">
                 </div>
+                <div class="message"></div>
                 <div class="addressButton">
                     <div class="buttonDiv">
                         <button class="button" type="button" onclick="searchAddress()">
@@ -78,7 +83,7 @@
                     </button>
                     <button class="button" type="submit">
                         <img src="style/button.png">
-                        <p>Register</p>
+                        <p>Post</p>
                     </button>
                 </div>
             </form>

@@ -25,7 +25,7 @@ if($postMessage != null){
             <img src="style/logo.png">
         </div>
         <div class="title">
-            <p>Pet & Family</p>
+            <p>Pet & Family-Instance ID: i-0ae50324c23a940fb</p>
         </div>
         <?php
             $user = $_SESSION['user'];
@@ -38,7 +38,7 @@ if($postMessage != null){
                 echo "</div>";
 
                 echo "<div class='register'>";
-                echo "<a href='register.html'>Register here</a>";
+                echo "<a href='register.php'>Register here</a>";
                 echo "</div>";
             }
         ?>
@@ -46,7 +46,7 @@ if($postMessage != null){
 
     <div class="search">
         <div class="searchForm">
-            <form>
+            <form action="postList.php" method="post" target="indexIframe">
                 <div class="radioDiv">
                     <div class="inputDiv">
                         <input type="radio" name="petType" value="dog">
@@ -82,7 +82,7 @@ if($postMessage != null){
 
             echo "<div class='welcome'>";
             echo "<p>~Welcome~</p>";
-            echo "<p>" . $user['nickname']['S'] . "</p>";
+            echo "<p>" . $user['nickname'] . "</p>";
             echo "</div>";
 
             echo "<div class='buttonDiv'>";

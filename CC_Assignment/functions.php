@@ -4,31 +4,11 @@
 require "aws/aws-autoloader.php";
 require "databaseInfo.php";
 
-// use the dynamoDbException
-use Aws\DynamoDb\Exception\DynamoDbException;
-
-// set default time zone
-date_default_timezone_set("Australia/Melbourne");
+/* ----------------------------- RDS functions ----------------------------- */
 
 function getConnection(){
     $con = new mysqli(serverName, username, passowrd, databaseName);
     return $con;
-}
-
-// get sdk for dynamoDB
-function getSDK(){
-    // get credentials
-    $credentials = new Aws\Credentials\Credentials(access_key, secret_key);
-
-    // get SDK
-    $sdk = new Aws\Sdk([
-        'version' => 'latest',
-        'region' => 'ap-southeast-2',
-        'credentials' => $credentials
-    ]);
-
-    // get SDK
-    return $sdk;
 }
 
 function registerRDS($uni_user_id, $email, $phone, $password){
@@ -41,40 +21,6 @@ function registerRDS($uni_user_id, $email, $phone, $password){
     }else{
         $con->close();
         return "RDS_Failed";
-    }
-}
-
-function registerDynamoDB($uni_user_id, $nickname, $name, $email, $phone, $password, $room, $street, $city, $state, $notificationType){
-    // create dynamoDB object and marsharler
-    $dynamoDB = getSDK()->createDynamoDb();
-    $marshaler = new Aws\DynamoDb\Marshaler();
-
-    // define the json
-    $item = $marshaler->marshalJson('{
-        "uni_user_id": "' . $uni_user_id . '",
-        "nickname": "' . $nickname . '",
-        "name" : "' . $name . '",
-        "email": "' . $email . '",
-        "phone": "' . $phone . '",
-        "password": "' . $password . '",
-        "room": "' . $room . '",
-        "street": "' . $street . '",
-        "city": "' . $city . '",
-        "state": "' . $state . '",
-        "notificationType": "' . $notificationType . '"
-    }');
-
-    // define the parameters
-    $parameters = [
-        "TableName" => USER_Table,
-        "Item" => $item
-    ];
-
-    $result = $dynamoDB->putItem($parameters);
-    if($result->count() > 0){
-        return "DynamoDB_Success";
-    }else{
-        return "DynamoDB_Failed";
     }
 }
 
@@ -100,24 +46,7 @@ function login($username, $password){
     }
 }
 
-function getUser($uni_user_id){
-    // create dynamoDB object and marsharler
-    $dynamoDB = getSDK()->createDynamoDb();
-    $marshaler = new Aws\DynamoDb\Marshaler();
-
-    $key = $marshaler->marshalJson('{
-        "uni_user_id": "' . $uni_user_id . '"
-    }');
-
-    $parameters = [
-        'TableName' => USER_Table,
-        'Key' => $key
-    ];
-
-    $result = $dynamoDB->getItem($parameters);
-
-    return $result["Item"];
-}
+/* ----------------------------- S3 functions ----------------------------- */
 
 // get S3 Client for use S3 storage
 function getS3Client(){
@@ -127,7 +56,7 @@ function getS3Client(){
     // get S3 Client
     $s3 = new Aws\S3\S3Client([
         'version' => 'latest',
-        'region' => 'ap-southeast-2',
+        'region' => REGION,
         'credentials' => $credentials
     ]);
 
@@ -167,72 +96,127 @@ function getImageURL($key){
     return $s3->getObjectUrl(BUCKET, $key);
 }
 
-// add post to dynamoDB
-function post($uni_post_id, $uni_user_id, $title, $type, $content, $latitude, $longitude, $address){
-    // get date and time
-    $date = date('Y-m-d H:i:s');
+/* ----------------------------- DynamoDB functions ----------------------------- */
 
-    // create dynamoDB object and marsharler
-    $dynamoDB = getSDK()->createDynamoDb();
-    $marshaler = new Aws\DynamoDb\Marshaler();
+/*
+ * use aws api gateway and lambda to replace the aws sdk php
+ * save all url into the 'databaseInfo.php'
+ * use the url to access aws api gateway, then the api call lambda function and return query result
+ */
 
-    $item = $marshaler->marshalJson('{
-        "uni_post_id": "' . $uni_post_id . '",
-        "post_date": "' . $date . '",
-        "uni_user_id": "' . $uni_user_id . '",
-        "title": "' . $title . '",
-        "type": "' . $type . '",
-        "content": "' . $content . '",
-        "latitude": '. $latitude . ',
-        "longitude": ' . $longitude . ',
-        "address": "' . $address . '"
-    }');
+/*
+ * this function is used to get scan result from dynamoDB
+ * parameter: type control the function use which url
+ * for example: type = post, use the 'getAllPost' url to get the scan result from table 'CC_Post'
+ */
+function getScanResult($type){
+    // create guzzle http to send request
+    $client = new \GuzzleHttp\Client();
 
-    $parameters = [
-        "TableName" => POST_Table,
-        "Item" => $item
-    ];
-
-    $result = $dynamoDB->putItem($parameters);
-    if($result->count() > 0){
-        return "Add_Post_Success";
-    }else{
-        return "Add_Post_Failed";
+    // create request
+    if($type == "post"){
+        $request = new \GuzzleHttp\Psr7\Request('GET', GETALLPOST);
     }
+
+    // get response
+    $response = $client->send($request);
+
+    // get response body
+    $body = $response->getBody();
+
+    // decode json array to object array
+    $result = json_decode($body, true);
+
+    return $result;
 }
 
-function getPosts(){
-    // create dynamoDB object and marsharler
-    $dynamoDB = getSDK()->createDynamoDb();
+/*
+ * this function is used to get query result from dynamoDB
+ * parameters:
+ * type control the function use which url
+ * parameter is the parameter for 'GET' request
+ */
+function getQueryResult($type, $parameter){
+    // create guzzle http to send request
+    $client = new \GuzzleHttp\Client();
 
-    $parameters = [
-        'TableName' => POST_Table
-    ];
+    // create request
+    if($type == "post"){
+        $request = new \GuzzleHttp\Psr7\Request('GET', GETPOSTBYID, $parameter);
+    }else if ($type == "user"){
+        $request = new \GuzzleHttp\Psr7\Request('GET', GETUSERBTID, $parameter);
+    }else if($type == "postType"){
+        $request = new \GuzzleHttp\Psr7\Request('GET', GETPOSTBYTYPE, $parameter);
+    }
 
-    $result = $dynamoDB->scan($parameters);
+    // get response
+    $response = $client->send($request);
 
-    return $result['Items'];
+    // get response body
+    $body = $response->getBody();
+
+    // decode json array to object array
+    $result = json_decode($body, true);
+
+    return $result;
 }
 
-function getPostDetails($uni_post_id){
-    // create dynamoDB object and marsharler
-    $dynamoDB = getSDK()->createDynamoDb();
-    $marshaler = new Aws\DynamoDb\Marshaler();
+/*
+ * this function is used to get insert, update, delete result from dynamoDB
+ * parameters:
+ * type control the function use which url
+ * parameter is the parameter for 'GET' request
+ */
+function dynamoDBOperation($type, $parameter){
+    // create guzzle http to send request
+    $client = new \GuzzleHttp\Client();
 
-    $key = $marshaler->marshalJson('{
-        ":id": "' . $uni_post_id . '"
-    }');
+    // create request
+    if($type == "insertUser"){
+        $request = new \GuzzleHttp\Psr7\Request('GET', INSERTUSER, $parameter);
+    }else if ($type == "insertPost"){
+        $request = new \GuzzleHttp\Psr7\Request('GET', INSERTPOST, $parameter);
+    }
 
-    $parameters = [
-        'TableName' => POST_Table,
-        'KeyConditionExpression' => '#id = :id',
-        'ExpressionAttributeNames' => [ '#id' => 'uni_post_id' ],
-        'ExpressionAttributeValues' => $key
-    ];
+    // get response
+    $response = $client->send($request);
 
-    $result = $dynamoDB->query($parameters);
+    // get response body
+    $body = $response->getBody();
 
-    return $result['Items'];
+    // decode json array to object array
+    $result = json_decode($body, true);
+
+    return $result;
+}
+
+/*
+ * this function for send message to phone number or email address
+ * parameters:
+ * 'type' control the type of message. phone or email
+ * 'parameter' includes all message:
+ *      phone message includes 'phone number' and 'content';
+ *      email message includes 'email address' and 'content';
+ */
+function sendMessage($type, $parameter){
+    // create guzzle http to send request
+    $client = new \GuzzleHttp\Client();
+
+    // create request
+    if($type == "phone"){
+        $request = new \GuzzleHttp\Psr7\Request('GET', SENDSMS, $parameter);
+    }
+
+    // get response
+    $response = $client->send($request);
+
+    // get response body
+    $body = $response->getBody();
+
+    // decode json array to object array
+    $result = json_decode($body, true);
+
+    return $result;
 }
 
 ?>
