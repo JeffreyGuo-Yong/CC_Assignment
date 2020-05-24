@@ -34,7 +34,7 @@ body,html{
 }
 .indexMain .header .title{
     font-family: Georgia;
-    font-size: 50px;
+    font-size: 40px;
     font-style: italic;
     margin-top: 2%;
     margin-right: 5%;
@@ -241,6 +241,12 @@ body,html{
     margin-left: 8%;
     margin-top: 2%;
 }
+.registerMain .content .message{
+    text-align: center;
+    margin-top: 0.5%;
+    font-size: 16px;
+    color: green;
+}
 /*---------- login page ----------*/
 .loginMain{
     width: 75%;
@@ -310,12 +316,12 @@ body,html{
 /*---------- post page ----------*/
 .postMain{
     width: 75%;
-    height: 165%;
+    height: 170%;
     margin: 0 auto;
 }
 .postMain .content{
     width: 75%;
-    height: 160%;
+    height: 165%;
     margin: 0 auto;
     position: absolute;
     top: 2%;
@@ -456,6 +462,11 @@ body,html{
     color: darkslategray;
     margin-top: 1%;
 }
+.postMain .content .form .message{
+    margin-top: 0.5%;
+    font-size: 16px;
+    color: red;
+}
 /*---------- post list page ----------*/
 .postListMain{
     width: 100%;
@@ -503,7 +514,7 @@ body,html{
 /*---------- post details page ----------*/
 .postDetailsMain{
     width: 100%;
-    height: 150%;
+    height: 200%;
 }
 .postDetailsMain .content{
     width: 80%;
@@ -576,9 +587,9 @@ body,html{
     margin-top: 2%;
 }
 .postDetailsMain .content .buttonDiv{
-    width: 265px;
+    width: 130px;
     margin: 0 auto;
-    margin-top: 4%;
+    margin-top: 3%;
 }
 .postDetailsMain .content .buttonDiv .button{
     width: 130px;
